@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "covid-19-chile"
+version = "0.1.0"
+description = ""
+authors = ["Alvaro Farias <alvaro.farias@protonmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pandas = "^1.0.3"
+lxml = "^4.5.0"
+jupyter = "^1.0.0"
+fastapi = "^0.52.0"
+uvicorn = "^0.11.3"
+orator = "^0.9.9"
+python-dotenv = "^0.12.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.6"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
