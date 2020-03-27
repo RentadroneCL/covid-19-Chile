@@ -1,6 +1,7 @@
 from routes import api
 from fastapi import FastAPI
 
+
 def create_app() -> FastAPI:
     """
     Create The Application
