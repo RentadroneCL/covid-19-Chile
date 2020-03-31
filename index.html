@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>COVID-19 Chile</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@1.2.0/dist/tailwind.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.css">
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@1.2.0/lib/index.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.css">
     <script src="https://cdn.jsdelivr.net/combine/npm/chart.js@2.9.3,npm/axios@0.19.2/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 </head>
@@ -22,21 +23,19 @@
     // Total Case Chart
     axios.get('http://api.estamosjuntos.cl/total')
          .then(response => {
-            // console.log(response.data._original);
+            const ctx = document.getElementById('totals');
+            const data = Object.values(response.data._original)
+                               .map(item => String(item).replace('.', ''))
+                               .map(item => parseInt(item));
 
-            let ctx = document.getElementById('totals');
-            let data = Object.values(response.data._original)
-                             .map(item => String(item).replace('.', ''))
-                             .map(item => parseInt(item));
-
-            // console.log(data);
+            console.log(data);
 
             let totals = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Nuevos Casos', 'Casos Totales', 'Fallecidos', 'Recuperados'],
                     datasets: [{
-                        label: 'Casos COVID-19 en Chile',
+                        label: '# Casos COVID-19 en Chile',
                         data: data,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
@@ -70,11 +69,8 @@
   // Totals line
   axios.get('http://api.estamosjuntos.cl/totals')
     .then(response => {
-        console.log(response.data);
-
         const ctx = document.getElementById('totals-line');
         const data = response.data;
-
         const lineChart = new Chart(ctx, {
             type: 'line',
             data: {
