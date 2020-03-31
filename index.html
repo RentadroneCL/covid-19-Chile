@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Chile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@1.2.0/dist/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@1.2.0/lib/index.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.css">
+    <script src="https://cdn.jsdelivr.net/combine/npm/chart.js@2.9.3,npm/axios@0.19.2/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+<body>
+    <div class="container mx-auto m-4 p-4">
+        <canvas class="w-12 h-12" id="totals"></canvas>
+    </div>
+    <div class="container mx-auto m-4 p-4">
+        <canvas class="w-12 h-12" id="totals-line"></canvas>
+    </div>
+</body>
+<script>
+    // Total Case Chart
+    axios.get('http://api.estamosjuntos.cl/total')
+         .then(response => {
+            const ctx = document.getElementById('totals');
+            const data = Object.values(response.data._original)
+                               .map(item => String(item).replace('.', ''))
+                               .map(item => parseInt(item));
+
+            console.log(data);
+
+            let totals = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Nuevos Casos', 'Casos Totales', 'Fallecidos', 'Recuperados'],
+                    datasets: [{
+                        label: '# Casos COVID-19 en Chile',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+         })
+         .catch(error => console.error(error.message));
+
+
+  // Totals line
+  axios.get('http://api.estamosjuntos.cl/totals')
+    .then(response => {
+        const ctx = document.getElementById('totals-line');
+        const data = response.data;
+        const lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.last_update._items,
+                datasets: [{
+                    label: 'Nuevos Casos',
+                    data: data.new_cases._items.map(item => String(item).replace('.', '')).map(item => parseInt(item)),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Casos Totales',
+                    data: data.total_cases._items.map(item => String(item).replace('.', '')).map(item => parseInt(item)),
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Fallecidos',
+                    data: data.deceased._items.map(item => String(item).replace('.', '')).map(item => parseInt(item)),
+                    backgroundColor: [
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Recuperados',
+                    data: data.recovered._items.map(item => String(item).replace('.', '')).map(item => parseInt(item)),
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+    })
+    .catch(error => console.log(error.message));
+</script>
+</html>
