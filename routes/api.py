@@ -1,3 +1,4 @@
+import pendulum
 from fastapi import APIRouter
 from app.Total import Total
 from app.DailyReport import DailyReport
@@ -32,7 +33,7 @@ async def totals():
         'total_cases': data.map(lambda item: item.total_cases),
         'deceased': data.map(lambda item: item.deceased),
         'recovered': data.map(lambda item: item.recovered),
-        'last_update': data.map(lambda item: item.last_update)
+        'last_update': data.map(lambda item: pendulum.parse(item.last_update).to_date_string())
     }
 
     return collect
